@@ -78,7 +78,7 @@ while len(angList) > 0:
             if  dist < closest:
                 closest = dist
                 closeAst = ast
-        rotDict[angList[i]].remove(ast)
+        rotDict[angList[i]].remove(closeAst)
         if len(rotDict[angList[i]]) == 0:
             del rotDict[angList[i]]
             toRemove.append(angList[i])

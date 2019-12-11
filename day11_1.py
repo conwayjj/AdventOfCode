@@ -3,62 +3,55 @@ from IntCodeProcessor import IntCodeProcessor
 grid = {(0,0):1}
 x = 0
 y = 0
-heading = 'N'
-mode = 0
+heading = ['N']
+mode = [0]
 xMax = 0
 xMin = 0
 yMax = 0
 yMin = 0
+loc = [x,y,xMax,xMin,yMax,yMin]
 
-def getColor():
-    global grid
+def getColor(grid, loc):
     retVal = 0
-    if (x,y) in grid:
-        retVal = grid[(x,y)]
+    if (loc[0],loc[1]) in grid:
+        retVal = grid[(loc[0],loc[1])]
     return retVal
 
-def paintAndDrive(out):
-    global grid
-    global x
-    global y
-    global heading
-    global mode
-    global x, xMax, xMin
-    global y, yMax, yMin
+def paintAndDrive(grid, loc, mode, heading, out):
     #PAINT
-    if mode == 0:
-        grid[(x,y)] = out
-        mode = 1
+    if mode[0] == 0:
+        grid[(loc[0],loc[1])] = out
+        mode[0] = 1
     #TURN/MOVE
-    elif mode == 1:
+    elif mode[0] == 1:
         #TURN
-        if heading == 'N':
-            heading = 'W' if out == 0 else 'E'
-        elif heading == 'W':
-            heading = 'S' if out == 0 else 'N'
-        elif heading == 'S':
-            heading = 'E' if out == 0 else 'W'
-        elif heading == 'E':
-            heading = 'N' if out == 0 else 'S'
+        if heading[0] == 'N':
+            heading[0] = 'W' if out == 0 else 'E'
+        elif heading[0] == 'W':
+            heading[0] = 'S' if out == 0 else 'N'
+        elif heading[0] == 'S':
+            heading[0] = 'E' if out == 0 else 'W'
+        elif heading[0] == 'E':
+            heading[0] = 'N' if out == 0 else 'S'
         #MOVE
-        if heading == 'N':
-            y -= 1
-        elif heading == 'E':
-            x += 1
-        elif heading == 'W':
-            x -= 1
-        elif heading == 'S':
-            y += 1
+        if heading[0] == 'N':
+            loc[1] -= 1
+        elif heading[0] == 'E':
+            loc[0] += 1
+        elif heading[0] == 'W':
+            loc[0] -= 1
+        elif heading[0] == 'S':
+            loc[1] += 1
         # Set Bounds
-        if x > xMax:
-            xMax = x
-        if y > yMax:
-            yMax = y
-        if y < yMin:
-            yMin = y
-        if x < xMin:
-            xMin = x
-        mode = 0
+        if loc[0] > loc[2]:
+            loc[2] = loc[0]
+        if loc[1] > loc[4]:
+            loc[4] = loc[1]
+        if loc[1] < loc[5]:
+            loc[5] = loc[1]
+        if loc[0] < loc[3]:
+            loc[3] = loc[0]
+        mode[0] = 0
     
 if __name__ == '__main__':
     with open('day11.txt') as inFile:
@@ -67,19 +60,17 @@ if __name__ == '__main__':
         for i in range(len(sourceTxt)):
             source[i] = int(sourceTxt[i])
 
-    procA = IntCodeProcessor(source, getInput = getColor, sendOutput = paintAndDrive)
+    procA = IntCodeProcessor(source, getInput = lambda : getColor(grid, loc), sendOutput = lambda x: paintAndDrive(grid, loc, mode, heading, x))
     procA.run()
 
 #print(grid)
 
 print(len(grid))
 
-#print(xMin, xMax, yMin, yMax)
-outString = [[" " for x in range(xMax - xMin+1)] for y in range(yMax-yMin+1)]
+outString = [[" " for x in range(loc[2] - loc[3]+1)] for y in range(loc[4]-loc[5]+1)]
 
 for key in grid:
-    #print(key,(xMax-xMin)-(key[0]-xMin),(yMax-yMin)-(key[1]-yMin))
-    outString[(key[1]-yMin)][(key[0]-xMin)] = "█" if grid[key] == 0 else " "
+    outString[(key[1]-loc[5])][(key[0]-loc[3])] = "█" if grid[key] == 0 else " "
 
 for row in outString:
     rowStr = ""

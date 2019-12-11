@@ -42,13 +42,13 @@ def paintAndDrive(out):
             heading = 'N' if out == 0 else 'S'
         #MOVE
         if heading == 'N':
-            y += 1
+            y -= 1
         elif heading == 'E':
             x += 1
         elif heading == 'W':
             x -= 1
         elif heading == 'S':
-            y -= 1
+            y += 1
         # Set Bounds
         if x > xMax:
             xMax = x
@@ -79,7 +79,7 @@ outString = [[" " for x in range(xMax - xMin+1)] for y in range(yMax-yMin+1)]
 
 for key in grid:
     #print(key,(xMax-xMin)-(key[0]-xMin),(yMax-yMin)-(key[1]-yMin))
-    outString[(yMax-yMin)-(key[1]-yMin)][(key[0]-xMin)] = "█" if grid[key] == 0 else " "
+    outString[(key[1]-yMin)][(key[0]-xMin)] = "█" if grid[key] == 0 else " "
 
 for row in outString:
     rowStr = ""

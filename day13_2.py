@@ -2,9 +2,11 @@ from IntCodeProcessor import IntCodeProcessor
 from tkinter import *
 from tkinter import ttk
 import time
+import os
 
 COLORS = ['white','black','red','blue','green']
-FRAMETIME = 0.1
+ICONS = [' ', "█", '♫', '═', '☺']
+FRAMETIME = 0.01
 
 class ArcadeCabinet:
     def __init__(self, source):
@@ -43,7 +45,7 @@ class ArcadeCabinet:
                     self.padPos[0] = self.outPos[0]
                     self.padPos[1] = self.outPos[1]
                 #self.drawScreen(out)
-                self.drawTkScreen(out)
+                #self.drawTkScreen(out)
         else:
             self.outPos[self.outCount] = out
         self.outCount = (self.outCount + 1) % 3
@@ -62,10 +64,10 @@ class ArcadeCabinet:
         time.sleep(FRAMETIME)
         
     def drawScreen(self, out):
-        if self.outPos[0] > self.screenSize[self.outCount][0]:
-                self.screenSize[self.outCount][0] = self.outPos[0]
-        if self.outPos[1] > self.screenSize[self.outCount][1]:
-                self.screenSize[self.outCount][1] = self.outPos[1]
+        if self.outPos[0] > self.screenSize[0]:
+                self.screenSize[0] = self.outPos[0]
+        if self.outPos[1] > self.screenSize[1]:
+                self.screenSize[1] = self.outPos[1]
         self.screen[(self.outPos[0],self.outPos[1])] = out
         frame = [[" " for y in range(self.screenSize[1]+1)] for x in range(self.screenSize[0]+1)]
         for loc in self.screen:
@@ -76,11 +78,11 @@ class ArcadeCabinet:
         for y in range(self.screenSize[1]+1):
             rowStr = ""
             for x in range(self.screenSize[0]+1):
-                rowStr += str(frame[x][y])
-                ttk.Button(self.display, text = self.screen[loc]).grid(column = x, row = y)
+                rowStr += ICONS[frame[x][y]] if frame[x][y] in range(len(ICONS)) else ICONS[0]
             frameBuf += rowStr + '\n'
+        os.system('cls')
         print (frameBuf)
-                
+                    
 if __name__ == '__main__':
     with open('day13.txt') as inFile:
         sourceTxt = inFile.read().strip().split(',')

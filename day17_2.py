@@ -8,7 +8,7 @@ COMMANDS = "A,B,A,C,B,A,B,C,C,B\n" + \
             "L,12,L,12,R,4\n" + \
             "R,10,R,6,R,4,R,4\n" + \
             "R,6,L,12,L,12\n" + \
-            "n\n"                 
+            "y\n"                 
             
             
 class RepairDroid:
@@ -34,18 +34,20 @@ class RepairDroid:
         
         
     def sendOutput(self, out):
-        if out > 100:
+        if out > 200:
             print("DUST COLLECTED:", out)
         if out == 10:
-            self.pos = (0 , self.pos[1] + 1)
-            self.yMax = self.pos[1]
+            if self.pos[0] == 0:
+                self.printMap()
+                self.pos = (0,0)
+            else:
+                self.pos = (0 , self.pos[1] + 1)
+                self.yMax = self.pos[1]
         else:
             self.map[self.pos] = chr(out)
             self.pos = (self.pos[0] + 1, self.pos[1])
             if self.pos[0] > self.xMax:
                 self.xMax = self.pos[0]
-        if self.pos[0] == self.xMax and self.pos[1] == self.yMax:
-            self.printMap()
 
 
             
@@ -55,7 +57,7 @@ class RepairDroid:
             for x in range(self.xMin,self.xMax):
                 mapString += self.map[(x,y)] if (x,y) in self.map else "X"
             mapString += '\n'
-        mapString += "X %d - %d Y %d - %d" % ( self.xMin, self.xMax, self.yMin, self.yMax)
+        #mapString += "X %d - %d Y %d - %d" % ( self.xMin, self.xMax, self.yMin, self.yMax)
         print (mapString)
             
     def run(self):
